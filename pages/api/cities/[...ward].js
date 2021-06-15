@@ -12,6 +12,10 @@ export default async (req, res) => {
   if (result.length > 0) {
     res.status(200).json(result);
   } else {
-    res.status(404).json({ message: `Ward is not found` });
+    res.status(200).json([
+      { id: 1, name: "01" },
+      { id: 2, name: "02" },
+      { id: 3, name: "03" },
+    ]);
   }
 };
