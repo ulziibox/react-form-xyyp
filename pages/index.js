@@ -23,7 +23,7 @@ export default function Home() {
     districts: [],
     wards: [],
   });
-  const [changed, setChanged] = useState(false);
+  // const [changed, setChanged] = useState(false);
   // const [cities, setCities] = useState([]);
   // const [districts, setDistricts] = useState([]);
   // const [wards, setWards] = useState([]);
@@ -47,6 +47,8 @@ export default function Home() {
   };
 
   const handleSelect = (id, type) => {
+    // setData({ ...data, districts: [], wards: [] });
+
     if (type == "city") {
       //get
       // setChanged(true);
@@ -73,7 +75,7 @@ export default function Home() {
     console.log(`===== I'm working ======`);
     const item = props.items.map((item) => {
       return (
-        <option key={item.id} value={item.id}>
+        <option key={item.id} value={item.name}>
           {item.name}
         </option>
       );
@@ -98,7 +100,7 @@ export default function Home() {
                 name="city"
                 onChange={(e) => {
                   handleChange(e.target.name, e.target.value);
-                  handleSelect(e.target.value, "city");
+                  handleSelect(e.target.options.selectedIndex, "city");
                 }}
               >
                 <option disabled="disabled" selected={true}>
@@ -109,7 +111,7 @@ export default function Home() {
 
                 {data.cities.map((item) => {
                   return (
-                    <option key={item.id} value={item.id}>
+                    <option key={item.id} value={item.name}>
                       {item.name}
                     </option>
                   );
@@ -124,7 +126,7 @@ export default function Home() {
                 name="district"
                 onChange={(e) => {
                   handleChange(e.target.name, e.target.value);
-                  handleSelect(e.target.value, "district");
+                  handleSelect(e.target.options.selectedIndex, "district");
                 }}
                 // onClick={setChangedCity(false)}
               >
@@ -154,7 +156,7 @@ export default function Home() {
                 ) : null}
               </select>
             </label>
-            <button>Бүртгүүлэх</button>
+            <button style={{ margin: "5px" }}>Бүртгүүлэх</button>
           </form>
         </div>
       </main>

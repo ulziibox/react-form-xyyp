@@ -79,6 +79,11 @@
   flex-direction: column;
 }
 
+.label {
+  display: flex;
+  height: 30px;
+}
+
 .card {
   margin: 1rem;
   padding: 1.5rem;
