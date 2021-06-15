@@ -4,12 +4,11 @@ import styles from "../styles/Home.module.css";
 import axios from "axios";
 import { useEffect, useState } from "react";
 
-const fetchData = () => {
+const fetchData = (url) => {
   return axios
-    .get("http://localhost:3000/api/cities")
+    .get(`http://localhost:3000/api/${url}`)
     .then((res) => {
       const results = res.data;
-      // console.log(results);
       return results;
     })
     .catch((err) => {
@@ -19,18 +18,46 @@ const fetchData = () => {
 
 export default function Home() {
   const [cities, setCities] = useState([]);
+  const [districts, setDistricts] = useState([]);
+  const [wards, setWards] = useState([]);
 
   useEffect(() => {
-    fetchData().then((apiCities) => {
+    fetchData(`cities`).then((apiCities) => {
       setCities(apiCities);
     });
   }, []);
 
+  function SelectedCity(id) {
+    console.log(id);
+    fetchData(`cities/${id}`)
+      .then((apiDistricts) => {
+        setDistricts(apiDistricts);
+      })
+      .catch((err) => {
+        console.error(err);
+      });
+  }
+
+  function SelectedDistrict(districtId, wardId) {
+    fetchData(`cities/${districtId}/${wardId}`)
+      .then((apiWards) => {
+        setWards(apiWards);
+      })
+      .catch((err) => {
+        console.error(err);
+      });
+  }
+
   function OptionItems(props) {
-    const negHuvisagch = props.items;
-    negHuvisagch.map((item) => {
-      <option key={item.id}>{item.name}</option>;
+    console.log("working map function");
+    const data = props.items.map((item) => {
+      return (
+        <option key={item.id} value={item.id}>
+          {item.name}
+        </option>
+      );
     });
+    return data;
   }
 
   return (
@@ -42,11 +69,35 @@ export default function Home() {
       <main className={styles.main}>
         <div className={styles.grid}>
           <label>
-            Аймаг/Хот:
-            <select>
+            Хот/Аймаг:
+            <select onChange={(e) => SelectedCity(e.target.value)}>
+              <option disabled selected>
+                Хот/Аймаг
+              </option>
               <OptionItems items={cities} />
+              {/* {cities.map((item) => {
+                return (
+                  <option key={item.id} value={item.id}>
+                    {item.name}
+                  </option>
+                );
+              })} */}
             </select>
           </label>
+
+          <label>
+            Сум/Дүүрэг:
+            <select>
+              <OptionItems items={districts} />
+            </select>
+          </label>
+
+          {/* <label>
+            Баг/Хороо:
+            <select>
+              <OptionItems items={wards} />
+            </select>
+          </label> */}
 
           {/* <label>
             Сум/Дүүрэг:
@@ -55,15 +106,6 @@ export default function Home() {
               <option value="lime">Lime</option>;
               <option value="coconut">Coconut</option>;
               <option value="mango">Mango</option>;
-            </select>
-          </label> */}
-          {/* <label>
-            Баг/Хороо:
-            <select value="value" onChange={() => console.log("hello")}>
-              <option value="grapefruit">Grapefruit</option>
-              <option value="lime">Lime</option>
-              <option value="coconut">Coconut</option>
-              <option value="mango">Mango</option>
             </select>
           </label> */}
         </div>
