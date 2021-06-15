@@ -23,7 +23,7 @@ export default function Home() {
     districts: [],
     wards: [],
   });
-  const [changedCity, setChangedCity] = useState(false);
+  const [changed, setChanged] = useState(false);
   // const [cities, setCities] = useState([]);
   // const [districts, setDistricts] = useState([]);
   // const [wards, setWards] = useState([]);
@@ -49,7 +49,7 @@ export default function Home() {
   const handleSelect = (id, type) => {
     if (type == "city") {
       //get
-      // setChangedCity(true);
+      // setChanged(true);
       fetchData(`cities/${id}`)
         .then((res) => {
           setData({ ...data, districts: res });
@@ -69,17 +69,18 @@ export default function Home() {
     }
   };
 
-  function OptionItems(props) {
-    // console.log("===== I'm working ======");
-    const data = props.items.map((item) => {
+  const OptionItems = (props) => {
+    console.log(`===== I'm working ======`);
+    const item = props.items.map((item) => {
       return (
         <option key={item.id} value={item.id}>
           {item.name}
         </option>
       );
     });
-    return data;
-  }
+
+    return item;
+  };
 
   return (
     <div className={styles.container}>
@@ -100,19 +101,19 @@ export default function Home() {
                   handleSelect(e.target.value, "city");
                 }}
               >
-                <option disabled selected>
+                <option disabled="disabled" selected={true}>
                   Хот/Аймаг
                 </option>
 
-                <OptionItems items={data.cities} />
+                {/* <OptionItems items={data.cities} /> */}
 
-                {/* {cities.map((item) => {
-                return (
-                  <option key={item.id} value={item.id}>
-                    {item.name}
-                  </option>
-                );
-              })} */}
+                {data.cities.map((item) => {
+                  return (
+                    <option key={item.id} value={item.id}>
+                      {item.name}
+                    </option>
+                  );
+                })}
               </select>
             </label>
 
@@ -127,10 +128,12 @@ export default function Home() {
                 }}
                 // onClick={setChangedCity(false)}
               >
-                <option disabled selected>
+                <option disabled="disabled" selected={true}>
                   Сум/Дүүрэг
                 </option>
-                <OptionItems items={data.districts} />
+                {data.districts.length > 0 ? (
+                  <OptionItems items={data.districts} />
+                ) : null}
               </select>
             </label>
 
@@ -143,13 +146,15 @@ export default function Home() {
                   handleChange(e.target.name, e.target.value);
                 }}
               >
-                <option disabled selected>
+                <option disabled="disabled" selected={true}>
                   Баг/Хороо
                 </option>
-                <OptionItems items={data.wards} />
+                {data.wards.length > 0 ? (
+                  <OptionItems items={data.wards} />
+                ) : null}
               </select>
             </label>
-            <button>Register</button>
+            <button>Бүртгүүлэх</button>
           </form>
         </div>
       </main>

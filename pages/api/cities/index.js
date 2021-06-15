@@ -1,5 +1,7 @@
 import { cities } from "../../../data/cities.js";
 
 export default async (req, res) => {
-  res.status(200).json(cities);
+  let result = cities;
+  // result.unshift({ id: 0, name: "Аймаг/Хот" });
+  res.status(200).json(result);
 };

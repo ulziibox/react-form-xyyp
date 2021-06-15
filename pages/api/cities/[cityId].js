@@ -2,7 +2,9 @@ import { districts } from "../../../data/districts.js";
 
 export default async (req, res) => {
   const { cityId } = req.query;
-  const result = districts.filter((city) => city.city_id === parseInt(cityId));
+  let result = districts.filter((city) => city.city_id === parseInt(cityId));
+
+  // result.unshift({ id: 0, name: "Сум/Дүүрэг" });
 
   if (result.length > 0) {
     res.status(200).json(result);
