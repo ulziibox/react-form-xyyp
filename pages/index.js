@@ -38,7 +38,6 @@ export default function Home() {
 
             <label>
               <p>Сум/Дүүрэг:</p>
-
               <Select
                 value={district}
                 defaultValue="default"
