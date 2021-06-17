@@ -1,82 +1,51 @@
-import { useEffect, useState } from "react";
+import { useState, useReducer } from "react";
 import Head from "next/head";
 import styles from "../styles/Home.module.css";
-import axios from "axios";
-import useForm from "../utils/useForm";
+import Select from "react-select";
+import address from "../data/address";
 
-const fetchData = (url) => {
-  return axios
-    .get(`http://localhost:3000/api/${url}`)
-    .then((res) => {
-      const results = res.data;
-      return results;
-    })
-    .catch((err) => {
-      console.error(err);
-    });
+const SET_CITY = "city";
+const SET_DISTRICT = "district";
+const SET_WARD = "ward";
+
+const reducer = (state, action) => {
+  switch (action.type) {
+    case SET_CITY:
+      return {
+        city: action.index,
+        district: null,
+        ward: null,
+      };
+    case SET_DISTRICT:
+      return {
+        ...state,
+        district: action.index,
+        ward: null,
+      };
+    case SET_WARD:
+      return {
+        ...state,
+        ward: action.index,
+      };
+    default:
+      return state;
+  }
 };
 
 export default function Home() {
-  const [values, handleChange] = useForm();
-  const [data, setData] = useState({
-    cities: [],
-    districts: [],
-    wards: [],
+  const [state, dispatch] = useReducer(reducer, {
+    city: null,
+    district: null,
+    ward: null,
   });
-  // const [cities, setCities] = useState([]);
-  // const [districts, setDistricts] = useState([]);
-  // const [wards, setWards] = useState([]);
-  // const [selectedCity, setSelectedCity] = useState();
-  // const [selectedDistrict, setSelectedDistrict] = useState();
-  // const [selectedWard, setSelectedWard] = useState();
 
-  useEffect(() => {
-    fetchData(`cities`)
-      .then((res) => {
-        setData({ ...data, cities: res });
-      })
-      .catch((err) => {
-        console.error(err);
-      });
-  }, []);
+  const handleChange = (index, type) => {
+    dispatch({ type: type, index });
+  };
 
   const register = (e) => {
     e.preventDefault();
-    console.log(values);
-  };
-
-  const handleSelect = (id, type) => {
-    if (type == "city") {
-      fetchData(`cities/${id}`)
-        .then((res) => {
-          setData({ ...data, districts: res, wards: [] }); //set districts and clear wards data
-        })
-        .catch((err) => {
-          console.error(err);
-        });
-    } else if (type == "district") {
-      //get wards
-      fetchData(`cities/${values.city}/${id}`)
-        .then((res) => {
-          setData({ ...data, wards: res });
-        })
-        .catch((err) => {
-          console.error(err);
-        });
-    }
-  };
-
-  const OptionItems = (props) => {
-    // console.log(`===== I'm working ======`);
-    const options = props.items.map((item) => {
-      return (
-        <option key={item.id} value={item.id}>
-          {item.name}
-        </option>
-      );
-    });
-
-    return options;
+    console.log(state);
   };
 
   return (
@@ -89,73 +58,67 @@ export default function Home() {
         <div>
           <form className={styles.grid} onSubmit={register}>
             <label>
-              Хот/Аймаг:
-              <select
-                value={values.city}
-                defaultValue="default"
-                name="city"
-                onChange={(e) => {
-                  handleChange(e.target.name, e.target.value);
-                  handleSelect(e.target.value, "city");
-                }}
-              >
-                <option value="default" hidden>
-                  Хот/Аймаг
-                </option>
-
-                {data.cities.length > 0 ? (
-                  <OptionItems items={data.cities} />
-                ) : null}
-
-                {/* {data.cities.map((item) => {
-                  return (
-                    <option key={item.id} value={item.name}>
-                      {item.name}
-                    </option>
-                  );
-                })} */}
-              </select>
+              <p>Хот/Аймаг:</p>
+              <Select
+                value={address.map((i, index) => ({ ...i, index }))[state.city]}
+                onChange={(e) => handleChange(e.index, SET_CITY)}
+                options={address.map((i, index) => ({ ...i, index }))}
+                getOptionLabel={(option) => option.name}
+                getOptionValue={(option) => option.index}
+                placeholder="Сонгох"
+              />
             </label>
 
             <label>
-              Сум/Дүүрэг:
-              <select
-                value={values.district}
-                defaultValue="default"
-                name="district"
-                onChange={(e) => {
-                  handleChange(e.target.name, e.target.value);
-                  handleSelect(e.target.value, "district");
-                }}
-              >
-                <option value="default" hidden>
-                  Сум/Дүүрэг
-                </option>
-                {data.districts.length > 0 ? (
-                  <OptionItems items={data.districts} />
-                ) : null}
-              </select>
+              <p>Сум/Дүүрэг:</p>
+              <Select
+                value={
+                  state.district != null
+                    ? address[state.city].districts.map((i, index) => ({
+                        ...i,
+                        index,
+                      }))[state.district]
+                    : []
+                }
+                onChange={(e) => handleChange(e.index, SET_DISTRICT)}
+                options={
+                  state.city != null
+                    ? address[state.city].districts.map((i, index) => ({
+                        ...i,
+                        index,
+                      }))
+                    : []
+                }
+                getOptionLabel={(option) => option.name}
+                getOptionValue={(option) => option.index}
+                placeholder="Сонгох"
+              />
             </label>
 
             <label>
-              Баг/Хороо:
-              <select
-                value={values.ward}
-                defaultValue="default"
-                name="ward"
-                onChange={(e) => {
-                  handleChange(e.target.name, e.target.value);
-                }}
-              >
-                <option value="default" hidden>
-                  Баг/Хороо
-                </option>
-                {data.wards.length > 0 ? (
-                  <OptionItems items={data.wards} />
-                ) : null}
-              </select>
+              <p>Баг/Хороо:</p>
+              <Select
+                value={
+                  state.ward != null
+                    ? address[state.city].districts[state.district].wards.map(
+                        (i, index) => ({ ...i, index })
+                      )[state.ward]
+                    : []
+                }
+                onChange={(e) => handleChange(e.index, SET_WARD)}
+                options={
+                  state.district != null
+                    ? address[state.city].districts[state.district].wards.map(
+                        (i, index) => ({ ...i, index })
+                      )
+                    : []
+                }
+                getOptionLabel={(option) => option.name}
+                getOptionValue={(option) => option.index}
+                placeholder="Сонгох"
+              />
             </label>
-            <button style={{ margin: "5px" }}>Бүртгүүлэх</button>
+            <button className={styles.registerBtn}>Бүртгүүлэх</button>
           </form>
         </div>
       </main>
