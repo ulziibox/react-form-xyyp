@@ -5,6 +5,7 @@ import axios from "axios";
 import useForm from "../utils/useForm";
 
 const fetchData = (url) => {
+  //get data from api
   return axios
     .get(`http://localhost:3000/api/${url}`)
     .then((res) => {
