@@ -3,6 +3,7 @@ import Head from "next/head";
 import styles from "../styles/Home.module.css";
 import Select from "react-select";
 import address from "../data/address";
+import { Button } from "@material-ui/core";
 
 const SET_CITY = "city";
 const SET_DISTRICT = "district";
@@ -118,7 +119,9 @@ export default function Home() {
                 placeholder="Сонгох"
               />
             </label>
-            <button className={styles.registerBtn}>Бүртгүүлэх</button>
+            <Button variant="contained" color="primary">
+              Бүртгүүлэх
+            </Button>
           </form>
         </div>
       </main>
