@@ -7,7 +7,7 @@ import address from "../data/address";
 const SET_CITY = "city";
 const SET_DISTRICT = "district";
 const SET_WARD = "ward";
-
+//initial
 const reducer = (state, action) => {
   switch (action.type) {
     case SET_CITY:
