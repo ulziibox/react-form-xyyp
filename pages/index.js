@@ -1,9 +1,10 @@
-import { useState, useReducer } from "react";
+import { useEffect, useReducer, useState } from "react";
 import Head from "next/head";
 import styles from "../styles/Home.module.css";
 import Select from "react-select";
 import address from "../data/address";
-import { Button } from "@material-ui/core";
+import { Button, Container, Box, CircularProgress } from "@material-ui/core";
+// import userForm from "../components/userForm";
 
 const SET_CITY = "city";
 const SET_DISTRICT = "district";
@@ -39,6 +40,7 @@ export default function Home() {
     district: null,
     ward: null,
   });
+  const [loading, setLoading] = useState(true);
 
   const handleChange = (index, type) => {
     dispatch({ type: type, index });
@@ -54,76 +56,87 @@ export default function Home() {
       <Head>
         <title>Create Next App</title>
       </Head>
-
       <main className={styles.main}>
-        <div>
-          <form className={styles.grid} onSubmit={register}>
-            <label>
-              <p>Хот/Аймаг:</p>
-              <Select
-                value={address.map((i, index) => ({ ...i, index }))[state.city]}
-                onChange={(e) => handleChange(e.index, SET_CITY)}
-                options={address.map((i, index) => ({ ...i, index }))}
-                getOptionLabel={(option) => option.name}
-                getOptionValue={(option) => option.index}
-                placeholder="Сонгох"
-              />
-            </label>
+        <Container maxWidth="lg">
+          <div>
+            {loading ? (
+              <form className={styles.grid} onSubmit={register}>
+                <label>
+                  <p>Хот/Аймаг:</p>
+                  <Select
+                    value={
+                      address.map((i, index) => ({ ...i, index }))[state.city]
+                    }
+                    onChange={(e) => handleChange(e.index, SET_CITY)}
+                    options={address.map((i, index) => ({ ...i, index }))}
+                    getOptionLabel={(option) => option.name}
+                    getOptionValue={(option) => option.index}
+                    placeholder="Сонгох"
+                  />
+                </label>
 
-            <label>
-              <p>Сум/Дүүрэг:</p>
-              <Select
-                value={
-                  state.district != null
-                    ? address[state.city].districts.map((i, index) => ({
-                        ...i,
-                        index,
-                      }))[state.district]
-                    : []
-                }
-                onChange={(e) => handleChange(e.index, SET_DISTRICT)}
-                options={
-                  state.city != null
-                    ? address[state.city].districts.map((i, index) => ({
-                        ...i,
-                        index,
-                      }))
-                    : []
-                }
-                getOptionLabel={(option) => option.name}
-                getOptionValue={(option) => option.index}
-                placeholder="Сонгох"
-              />
-            </label>
+                <label>
+                  <p>Сум/Дүүрэг:</p>
+                  <Select
+                    value={
+                      state.district != null
+                        ? address[state.city].districts.map((i, index) => ({
+                            ...i,
+                            index,
+                          }))[state.district]
+                        : []
+                    }
+                    onChange={(e) => handleChange(e.index, SET_DISTRICT)}
+                    options={
+                      state.city != null
+                        ? address[state.city].districts.map((i, index) => ({
+                            ...i,
+                            index,
+                          }))
+                        : []
+                    }
+                    getOptionLabel={(option) => option.name}
+                    getOptionValue={(option) => option.index}
+                    placeholder="Сонгох"
+                  />
+                </label>
 
-            <label>
-              <p>Баг/Хороо:</p>
-              <Select
-                value={
-                  state.ward != null
-                    ? address[state.city].districts[state.district].wards.map(
-                        (i, index) => ({ ...i, index })
-                      )[state.ward]
-                    : []
-                }
-                onChange={(e) => handleChange(e.index, SET_WARD)}
-                options={
-                  state.district != null
-                    ? address[state.city].districts[state.district].wards.map(
-                        (i, index) => ({ ...i, index })
-                      )
-                    : []
-                }
-                getOptionLabel={(option) => option.name}
-                getOptionValue={(option) => option.index}
-                placeholder="Сонгох"
-              />
-            </label>
-            <Button variant="contained" color="primary">
-              Бүртгүүлэх
-            </Button>
-          </form>
-        </div>
+                <label>
+                  <p>Баг/Хороо:</p>
+                  <Select
+                    value={
+                      state.ward != null
+                        ? address[state.city].districts[
+                            state.district
+                          ].wards.map((i, index) => ({ ...i, index }))[
+                            state.ward
+                          ]
+                        : []
+                    }
+                    onChange={(e) => handleChange(e.index, SET_WARD)}
+                    options={
+                      state.district != null
+                        ? address[state.city].districts[
+                            state.district
+                          ].wards.map((i, index) => ({ ...i, index }))
+                        : []
+                    }
+                    getOptionLabel={(option) => option.name}
+                    getOptionValue={(option) => option.index}
+                    placeholder="Сонгох"
+                  />
+                </label>
+                <Box m={2}>
+                  <Button variant="contained" color="primary">
+                    Бүртгүүлэх
+                  </Button>
+                </Box>
+              </form>
+            ) : (
+              <CircularProgress />
+            )}
+          </div>
+        </Container>
       </main>
     </div>
   );
